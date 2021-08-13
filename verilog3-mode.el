@@ -238,6 +238,14 @@
     ;; T
     ("task" . "endtask")
     ("table" . "endtable")
+    ;; UVM
+    ("`uvm_component_utils_begin" . "`uvm_component_utils_end")
+    ("`uvm_component_param_utils_begin" . "`uvm_component_utils_end")
+    ("`uvm_field_utils_begin" . "`uvm_field_utils_end")
+    ("`uvm_object_utils_begin" . "`uvm_object_utils_end")
+    ("`uvm_object_param_utils_begin" . "`uvm_object_utils_end")
+    ("`uvm_sequence_utils_begin" . "`uvm_sequence_utils_end")
+    ("`uvm_sequencer_utils_begin" . "`uvm_sequencer_utils_end")
     )
   "All matching keywords for indentation.")
 
@@ -257,7 +265,7 @@
   '("`begin_keywords"
     "`celldefine"
     "`default_nettype"
-    "`define"
+    ;;"`define"
     "`else"
     "`elsif"
     "`end_keywords"
@@ -265,15 +273,16 @@
     "`endif"
     "`ifdef"
     "`ifndef"
-    "`include"
-    "`line"
-    "`nounconnected_drive"
-    "`pragma"
-    "`resetall"
-    "`timescale"
-    "`unconnected_drive"
-    "`undef"
-    "`undefineall")
+    ;;"`include"
+    ;;"`line"
+    ;;"`nounconnected_drive"
+    ;;"`pragma"
+    ;;"`resetall"
+    ;;"`timescale"
+    ;;"`unconnected_drive"
+    ;;"`undef"
+    ;;"`undefineall"
+    )
   "Keywords (directives) that should be left aligned.")
 
 (defvar verilog3-indent-equivalent-cache nil)
@@ -401,7 +410,8 @@ skips any matches inside comments."
   (verilog3-set-token-regex)
   (let ((done nil))
     (while (and (not done)
-                (re-search-backward verilog3-token-regex nil t))
+                (let ((case-fold-search nil))
+                  (re-search-backward verilog3-token-regex nil t)))
       (unless (verilog3-comment-or-string-p) (setq done t)))
     (when done
       (if (not (match-end 1))
@@ -418,7 +428,8 @@ any matches inside comments."
   (verilog3-set-token-regex)
   (let ((done nil))
     (while (and (not done)
-                (re-search-forward verilog3-token-regex nil t))
+                (let ((case-fold-search nil))
+                  (re-search-forward verilog3-token-regex nil t)))
       (unless (verilog3-comment-or-string-p) (setq done t)))
     (when done
       (if (not (match-end 1))
@@ -470,7 +481,8 @@ backward-sexp. If a matching token wasn't found, do not move point."
           ;; Keep going until we found our matching keyword or until there are
           ;; no more matches.
           (while (and (> open-count 0)
-                      (re-search-backward pat nil t))
+                      (let ((case-fold-search nil))
+                        (re-search-backward pat nil t)))
             ;; Only consider this match if it's not a string or comment or 
             ;; a special begin keyword.
             (unless (or (verilog3-comment-or-string-p)
@@ -498,7 +510,8 @@ forward-sexp. If a matching token wasn't found, do not move point."
           ;; Keep going until we found our matching keyword or until there are
           ;; no more matches.
           (while (and (> open-count 0)
-                      (re-search-forward pat nil t))
+                      (let ((case-fold-search nil))
+                        (re-search-forward pat nil t)))
             ;; Only consider this match if it's not a string or comment or 
             ;; a special begin keyword.
             (unless (or (verilog3-comment-or-string-p)
