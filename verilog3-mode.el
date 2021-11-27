@@ -253,6 +253,7 @@
   '("if"
     "else"
     "for"
+    "while"
     "initial"
     "final"
     "always"
